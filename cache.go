@@ -66,10 +66,12 @@ func NewCache(defaultExpireTime time.Duration, capacity int) *Cache {
 	return c
 }
 
+// easy set. Set a key-value to memory with default expire time and size 1
 func (c *Cache) Set(key string, value interface{}) {
 	c.SetEx(key, value, 1, c.defaultExpireTime)
 }
 
+// Set a key-value to memory with size and expire time
 func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Duration) {
 	item := &entry{
 		key:    key,
@@ -110,6 +112,7 @@ func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Durat
 	c.mu.Unlock()
 }
 
+// get the value of key. if not exist will return ( nil, false)
 func (c *Cache) Get(key string) (interface{}, bool) {
 	c.mu.RLock()
 
@@ -146,10 +149,12 @@ func (c *Cache) removeLeastRecentUsed() {
 	}
 }
 
+// get the hit number.
 func (c *Cache) HitNumber() int64 {
 	return atomic.LoadInt64(&c.hit)
 }
 
+// get the miss number.
 func (c *Cache) MissNumber() int64 {
 	return atomic.LoadInt64(&c.miss)
 }

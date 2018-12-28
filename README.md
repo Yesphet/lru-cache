@@ -9,8 +9,14 @@ Golang 内存缓存实现：
 
 
 ```golang
+// new cache instance
 c := NewCache(5*time.Minute, 10000)
+
+// easy set
 c.Set("key", "value")
+
+// set the value, size and expiration with a key
+c.SetEx("key","value", 5, 5*time.Minute)
 v, exist := c.Get("key")
 if !exist {
 	// not exist
