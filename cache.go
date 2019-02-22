@@ -122,10 +122,13 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 		c.mu.RUnlock()
 		return nil, false
 	}
-	atomic.AddInt64(&c.hit, 1)
-	c.ll.MoveToFront(item.lle)
-
 	c.mu.RUnlock()
+	atomic.AddInt64(&c.hit, 1)
+
+	c.mu.Lock()
+	c.ll.MoveToFront(item.lle)
+	c.mu.Unlock()
+
 	return item.value, true
 }
 
