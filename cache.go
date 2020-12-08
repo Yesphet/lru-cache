@@ -71,8 +71,14 @@ func (c *Cache) Set(key string, value interface{}) {
 	c.SetEx(key, value, 1, c.defaultExpireTime)
 }
 
-// Set a key-value to memory with size and expire time
+// Set a key-value to memory with size and expire time.
 func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Duration) {
+	// You can't set an element whose size larger than the capacity, we don't return an error
+	// since this operation is just like this huge element was eliminated as soon as it was set in.
+	if size > c.capacity {
+		return
+	}
+
 	item := &entry{
 		key:    key,
 		value:  value,
@@ -92,6 +98,7 @@ func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Durat
 	}
 
 	c.used += item.size
+	// replace if the key is exist.
 	if origin, exist := c.items[key]; exist {
 		c.used -= origin.size
 
