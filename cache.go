@@ -50,6 +50,7 @@ func (e *entry) isExpire() bool {
 	return e.expire != 0 && e.expire < time.Now().UnixNano()
 }
 
+// NewCache create a new Cache instance, you can set the capacity to 0 if you don't want to limit the cache size
 func NewCache(defaultExpireTime time.Duration, capacity int) *Cache {
 	c := &Cache{
 		defaultExpireTime: defaultExpireTime,
@@ -75,7 +76,7 @@ func (c *Cache) Set(key string, value interface{}) {
 func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Duration) {
 	// You can't set an element whose size larger than the capacity, we don't return an error
 	// since this operation is just like this huge element was eliminated as soon as it was set in.
-	if size > c.capacity {
+	if c.capacity > 0 && size > c.capacity {
 		return
 	}
 
@@ -93,7 +94,7 @@ func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Durat
 	c.mu.Lock()
 
 	//do lru
-	for c.used+item.size > c.capacity {
+	for c.capacity > 0 && c.used+item.size > c.capacity {
 		c.removeLeastRecentUsed()
 	}
 
