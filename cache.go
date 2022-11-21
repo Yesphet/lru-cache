@@ -66,12 +66,12 @@ func NewCache(defaultExpireTime time.Duration, capacity int) *Cache {
 	return c
 }
 
-// easy set. Set a key-value to memory with default expire time and size 1
+// Set is an easy set method. Set a key-value to memory with default expire time and size 1
 func (c *Cache) Set(key string, value interface{}) {
 	c.SetEx(key, value, 1, c.defaultExpireTime)
 }
 
-// Set a key-value to memory with size and expire time.
+// SetEx sets a key-value to memory with size and expire time.
 func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Duration) {
 	// You can't set an element whose size larger than the capacity, we don't return an error
 	// since this operation is just like this huge element was eliminated as soon as it was set in.
@@ -98,7 +98,7 @@ func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Durat
 	}
 
 	c.used += item.size
-	// replace if the key is exist.
+	// replace if the key is existed.
 	if origin, exist := c.items[key]; exist {
 		c.used -= origin.size
 
@@ -119,7 +119,7 @@ func (c *Cache) SetEx(key string, value interface{}, size int, expire time.Durat
 	c.mu.Unlock()
 }
 
-// get the value of key. if not exist will return ( nil, false)
+// Get gets the value of key. if not exist will return ( nil, false)
 func (c *Cache) Get(key string) (interface{}, bool) {
 	c.mu.RLock()
 
@@ -159,12 +159,12 @@ func (c *Cache) removeLeastRecentUsed() {
 	}
 }
 
-// get the hit number.
+// HitNumber returns the hit number.
 func (c *Cache) HitNumber() int64 {
 	return atomic.LoadInt64(&c.hit)
 }
 
-// get the miss number.
+// MissNumber returns the miss number.
 func (c *Cache) MissNumber() int64 {
 	return atomic.LoadInt64(&c.miss)
 }

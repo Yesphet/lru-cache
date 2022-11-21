@@ -144,8 +144,8 @@ func TestCache_Set_lru_3(t *testing.T) {
 
 func BenchmarkCache_Set(b *testing.B) {
 	c := NewCache(0, 60000000)
-	concurrent := 100
-	times := 100000
+	concurrent := 1000
+	times := 10000
 
 	start := time.Now().UnixNano()
 
