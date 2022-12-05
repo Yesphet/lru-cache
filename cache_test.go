@@ -95,6 +95,20 @@ func TestCache_Set_lru(t *testing.T) {
 	}
 }
 
+func TestCache_Remove(t *testing.T) {
+	c := NewCache(0, 100)
+	for i := 0; i < 10; i++ {
+		c.Set(strconv.FormatInt(int64(i), 10), i)
+	}
+	for i := 0; i < 10; i++ {
+		c.Remove(strconv.FormatInt(int64(i), 10))
+	}
+	for i := 0; i < 10; i++ {
+		_, exist := c.Get(strconv.FormatInt(int64(i), 10))
+		assert.False(t, exist)
+	}
+}
+
 func TestCache_Set_lru_2(t *testing.T) {
 	c := NewCache(0, 100)
 

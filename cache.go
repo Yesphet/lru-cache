@@ -140,6 +140,15 @@ func (c *Cache) Get(key string) (interface{}, bool) {
 	return item.value, true
 }
 
+func (c *Cache) Remove(key string) {
+	c.mu.Lock()
+	item, exist := c.items[key]
+	if exist {
+		c.remove(item)
+	}
+	c.mu.Unlock()
+}
+
 func (c *Cache) remove(item *entry) {
 	delete(c.items, item.key)
 	c.ll.Remove(item.lle)
